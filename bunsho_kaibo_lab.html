@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>文章解剖研究所</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2e;--panel2:#18233b;--line:#2a3857;--text:#eef3ff;--muted:#9eacc8;--cyan:#55d6e8;--violet:#9d8cff;--green:#65d6a3;--amber:#ffc66d}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 85% 0%,#1c2850 0,transparent 32%),var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Noto Sans JP",sans-serif}
+.wrap{max-width:1120px;margin:auto;padding:28px 18px 60px}.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:24px}.brand{display:flex;gap:13px;align-items:center}.logo{width:48px;height:48px;border-radius:15px;background:linear-gradient(135deg,var(--cyan),var(--violet));display:grid;place-items:center;color:#081323;font-size:25px;font-weight:900}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--cyan);font-weight:800}.brand h1{font-size:clamp(21px,4vw,30px);margin:2px 0}.tag{border:1px solid var(--line);color:var(--muted);padding:7px 11px;border-radius:99px;font-size:12px}
+.grid{display:grid;grid-template-columns:1.05fr .95fr;gap:18px}.panel{background:linear-gradient(180deg,rgba(24,35,59,.96),rgba(18,26,46,.96));border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:0 12px 40px #0003}.panel h2{font-size:16px;margin:0 0 12px}.sub{color:var(--muted);font-size:12px;line-height:1.7}textarea{width:100%;min-height:310px;resize:vertical;background:#0c1426;border:1px solid #344361;border-radius:12px;padding:15px;color:var(--text);font:14px/1.9 inherit;outline:none}textarea:focus{border-color:var(--cyan);box-shadow:0 0 0 3px #55d6e822}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:13px}button{border:0;border-radius:10px;padding:11px 15px;font-weight:750;cursor:pointer}.primary{background:linear-gradient(100deg,var(--cyan),#8b9dff);color:#071322}.secondary{background:#263552;color:var(--text);border:1px solid #3b4c6e}.metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.metric{background:#0d1629;border:1px solid var(--line);border-radius:13px;padding:13px}.metric .k{color:var(--muted);font-size:11px}.metric .v{font-size:25px;font-weight:800;margin-top:3px}.metric small{font-size:11px;color:var(--muted)}.score{display:flex;align-items:center;gap:17px;margin-bottom:16px;padding:14px;background:#0d1629;border:1px solid var(--line);border-radius:14px}.ring{width:76px;height:76px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--cyan) var(--score),#293652 0);position:relative;flex:none}.ring:before{content:"";position:absolute;inset:7px;border-radius:50%;background:#0d1629}.ring strong{position:relative;font-size:22px}.score h3{margin:0 0 4px;font-size:16px}.score p{margin:0;color:var(--muted);font-size:12px;line-height:1.6}.section{margin-top:18px}.barrow{display:grid;grid-template-columns:95px 1fr 48px;align-items:center;gap:9px;margin:10px 0;font-size:12px;color:var(--muted)}.bar{height:8px;background:#263552;border-radius:99px;overflow:hidden}.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--cyan),var(--violet));border-radius:99px}.list{display:flex;flex-wrap:wrap;gap:7px}.chip{background:#253451;border:1px solid #3a4c70;border-radius:99px;padding:6px 10px;font-size:12px}.report{white-space:pre-wrap;background:#0c1426;border:1px solid var(--line);padding:13px;border-radius:12px;font-size:12px;line-height:1.8;color:#d8e3fa}.empty{color:var(--muted);font-size:13px;line-height:1.8;padding:35px 10px;text-align:center}.footer{color:#71809f;font-size:11px;text-align:center;margin-top:22px;line-height:1.7}
+@media(max-width:800px){.grid{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}textarea{min-height:230px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top"><div class="brand"><div class="logo">解</div><div><div class="eyebrow">TEXT FORENSICS LAB</div><h1>文章解剖研究所</h1></div></div><div class="tag">LOCAL ANALYSIS · API不要</div></header>
+<div class="grid">
+<section class="panel">
+<h2>🔬 分析する文章を投入</h2>
+<p class="sub">文章を貼り付けて「解剖開始」。入力内容はこのブラウザ内で処理され、サーバーには送信されません。</p>
+<textarea id="source" placeholder="ここに分析したい文章を貼り付けてください。&#10;&#10;メール、ブログ、レポート、SNS投稿など何でもOK。"></textarea>
+<div class="actions"><button class="primary" id="analyze">解剖開始 →</button><button class="secondary" id="sample">サンプルを入れる</button><button class="secondary" id="clear">クリア</button></div>
+<p class="sub" id="count">0文字</p>
+</section>
+<section class="panel" id="results">
+<h2>📋 解剖レポート</h2><div class="empty">まだ分析されていません。<br>文章を投入して解剖を開始してください。</div>
+</section>
+</div>
+<div class="footer">文章の特徴を機械的に集計するツールです。文体タイプや指数は独自の目安であり、文章の優劣・能力・性格を科学的に判定するものではありません。</div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+const sample='いつもお世話になっております。先日はお忙しいところ、お時間をいただきありがとうございました。今回の件について、改めて確認させていただきたいことがあります。\\n\\nまず、現在の進捗状況についてですが、予定より少し遅れている状況です。そのため、今後のスケジュールを見直す必要があると考えています。できるだけ早く対応したいと思いますので、ご確認よろしくお願いいたします。\\n\\nまた、追加で確認したい点がいくつかあります。特に、提出する資料の形式と、最終的な締め切りについて、もう一度認識を合わせておければと思います。何卒よろしくお願いいたします。';
+$('sample').onclick=()=>{$('source').value=sample;updateCount()};
+$('clear').onclick=()=>{$('source').value='';updateCount();$('results').innerHTML='<h2>📋 解剖レポート</h2><div class="empty">まだ分析されていません。<br>文章を投入して解剖を開始してください。</div>'};
+$('source').addEventListener('input',updateCount);
+function updateCount(){$('count').textContent=[...$('source').value].length.toLocaleString()+'文字';}
+function esc(s){return s.replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function analyze(){
+ const raw=$('source').value.trim();if(!raw){alert('文章を入力してください');return}
+ const chars=[...raw],len=chars.length;
+ const sentences=raw.split(/[。！？!?]+/).map(x=>x.trim()).filter(Boolean);
+ const lines=raw.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+ const count=(re)=>[...raw.matchAll(re)].length;
+ const kanji=count(/\p{Script=Han}/gu), hira=count(/\p{Script=Hiragana}/gu), kata=count(/\p{Script=Katakana}/gu), latin=count(/[A-Za-z]/g), digits=count(/[0-9０-９]/g);
+ const punct=count(/[、。，．,.!?！？:：;；]/g),question=count(/[?？]/g),exclaim=count(/[!！]/g);
+ const spaces=count(/[ \t]/g),br= Math.max(0,raw.split('\n').length-1);
+ const avg=sentences.length?Math.round(len/sentences.length*10)/10:len;
+ const long=sentences.filter(s=>[...s].length>=60).length;
+ const short=sentences.filter(s=>[...s].length<=20).length;
+ const endings=['です','ます','でした','ません','だ','である','と思います','でしょう','ください'];
+ const endingCounts=endings.map(e=>[e,(raw.match(new RegExp(e+'[。！？!?\\n]','g'))||[]).length]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
+ const bigrams={};const compact=raw.replace(/\s/g,'');
+ for(let i=0;i<compact.length-1;i++){const bg=compact.slice(i,i+2);if(/[、。！？!?]/.test(bg))continue;bigrams[bg]=(bigrams[bg]||0)+1}
+ const frequent=Object.entries(bigrams).filter(([k,v])=>v>=3).sort((a,b)=>b[1]-a[1]).slice(0,8);
+ const kanjiPct=Math.round(kanji/Math.max(1,len)*1000)/10, hiraPct=Math.round(hira/Math.max(1,len)*1000)/10, kataPct=Math.round(kata/Math.max(1,len)*1000)/10;
+ const density=Math.round(punct/Math.max(1,len)*1000)/10;
+ let type='バランス型',desc='複数の特徴がほどよく混在しています。';
+ if(avg>=55) {type='長文じっくり型';desc='一文に多くの情報を詰め込む傾向があります。文を分けると読みやすくなるかもしれません。'}
+ else if(avg<=25){type='テンポ重視型';desc='短めの文でテンポよく進む構成です。'}
+ else if(kanjiPct>=35){type='漢字しっかり型';desc='漢字の比率が高めです。専門性や硬さを感じさせる場合があります。'}
+ else if(question+exclaim>=Math.max(3,sentences.length*.35)){type='呼びかけ型';desc='疑問符・感嘆符が比較的多く、読み手への呼びかけが目立ちます。'}
+ const score=Math.max(35,Math.min(98,Math.round(100-Math.abs(avg-38)*.45-Math.max(0,kanjiPct-32)*.5-Math.max(0,density-7)*1.5)));
+ const metric=(k,v,unit='')=>`<div class="metric"><div class="k">${k}</div><div class="v">${v}</div><small>${unit}</small></div>`;
+ const bar=(k,v)=>`<div class="barrow"><span>${k}</span><div class="bar"><i style="width:${Math.min(100,v)}%"></i></div><b>${v}%</b></div>`;
+ const endingHtml=endingCounts.length?endingCounts.map(x=>`<span class="chip">${esc(x[0])}：${x[1]}回</span>`).join(''):'<span class="sub">目立つ語尾パターンは検出されませんでした</span>';
+ const bigramHtml=frequent.length?frequent.map(x=>`<span class="chip">「${esc(x[0])}」 ${x[1]}回</span>`).join(''):'<span class="sub">3回以上の連続文字の繰り返しは少なめです</span>';
+ const report=`文章解剖研究所 レポート\\n文字数：${len}\\n文数：${sentences.length}\\n段落数：${lines.length}\\n平均文長：${avg}\\n漢字比率：${kanjiPct}%\\nひらがな比率：${hiraPct}%\\nカタカナ比率：${kataPct}%\\n句読点密度：${density}%\\n長文（60文字以上）：${long}\\n短文（20文字以下）：${short}\\n文章タイプ：${type}\\n独自バランス指数：${score}/100`;
+ $('results').innerHTML=`<h2>📋 解剖レポート</h2><div class="score"><div class="ring" style="--score:${score}%"><strong>${score}</strong></div><div><h3>${type}</h3><p>${desc}</p><p style="margin-top:5px">独自バランス指数：${score}/100（参考値）</p></div></div><div class="metrics">${metric('総文字数',len.toLocaleString(),'空白・改行を含む')}${metric('文の数',sentences.length,'句点・疑問符などで分割')}${metric('段落数',lines.length,'改行で判定')}${metric('平均文長',avg,'文字 / 文')}${metric('長文',long,'60文字以上')}${metric('短文',short,'20文字以下')}</div><div class="section"><h2>文字種の構成</h2>${bar('漢字',kanjiPct)}${bar('ひらがな',hiraPct)}${bar('カタカナ',kataPct)}${bar('英字',Math.round(latin/Math.max(1,len)*1000)/10)}</div><div class="section"><h2>文章のクセ</h2><div class="list">${endingHtml}</div><p class="sub">句読点・記号：${punct}個 ／ 疑問符：${question}個 ／ 感嘆符：${exclaim}個 ／ 改行：${br}回 ／ 空白：${spaces}個</p></div><div class="section"><h2>繰り返しパターン（2文字連続）</h2><div class="list">${bigramHtml}</div></div><div class="section"><h2>📄 レポートを書き出す</h2><div class="actions"><button class="secondary" id="copy">結果をコピー</button><button class="secondary" id="download">TXTで保存</button></div><div class="report" id="report">${esc(report)}</div></div><p class="sub">※文字種比率は総文字数を分母とした概算です。独自指数・タイプ分類は娯楽的な目安で、科学的な文章評価ではありません。</p>`;
+ $('copy').onclick=async()=>{try{await navigator.clipboard.writeText(report);$('copy').textContent='コピーしました'}catch(e){alert('コピーできませんでした。ブラウザの権限を確認してください')}};
+ $('download').onclick=()=>{const blob=new Blob([report],{type:'text/plain;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='文章解剖レポート.txt';a.click();URL.revokeObjectURL(a.href)};
+}
+$('analyze').onclick=analyze;
+</script>
+</body>
+</html>
